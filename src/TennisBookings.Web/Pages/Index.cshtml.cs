@@ -29,7 +29,7 @@ namespace TennisBookings.Web.Pages
             var features = new Features();
             _config.Bind("Features:HomePage", features);
 
-            if (features.EnableRandomGreeting)
+            if (features.EnableGreeting)
             {
                 Greeting = _greetingService.GetRandomGreeting();
             }
@@ -70,7 +70,7 @@ namespace TennisBookings.Web.Pages
 
         private class Features
         {
-            public bool EnableRandomGreeting { get; set; }
+            public bool EnableGreeting { get; set; }
             public bool EnableWeatherForecast { get; set; }
             public string ForecastSectionTitle { get; set; }
         }
