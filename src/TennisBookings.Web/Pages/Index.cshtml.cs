@@ -9,11 +9,13 @@ namespace TennisBookings.Web.Pages
     {
         private readonly IGreetingService _greetingService;
         private readonly IConfiguration _config;
+        private readonly IWeatherForecaster _weatherForecaster;
 
-        public IndexModel(IGreetingService greetingService, IConfiguration config)
+        public IndexModel(IGreetingService greetingService, IConfiguration config, IWeatherForecaster weatherForecaster)
         {
             _greetingService = greetingService;
             _config = config;
+            _weatherForecaster = weatherForecaster;
         }
 
         public string Greeting { get; private set; }
@@ -31,7 +33,28 @@ namespace TennisBookings.Web.Pages
                 Greeting = _greetingService.GetRandomGreeting();
             }
 
-            ShowWeatherForecast = homePageFeatures.GetValue<bool>("EnableWeatherForecast");
+            ShowWeatherForecast = homePageFeatures.GetValue<bool>("EnableWeatherForecast")
+                && _weatherForecaster.ForecastEnabled;
+
+            var currentWeather = await _weatherForecaster.GetCurrentWeatherAsync();
+
+            if (currentWeather == null)
+                return;
+
+            switch (currentWeather.Description)
+            {
+                case "Sun":
+                    WeatherDescription = "It's sunnaeaeeeyyyy!";
+                    break;
+
+                case "Rain":
+                    WeatherDescription = "It's raining... No tennis today :(";
+                    break;
+
+                default:
+                    WeatherDescription = string.Empty;
+                    break;
+            }
         }
     }
 }

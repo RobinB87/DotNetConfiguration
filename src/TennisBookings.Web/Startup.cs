@@ -34,7 +34,7 @@ namespace TennisBookings.Web
                 .AddMembershipServices()
                 .AddStaffServices()
                 .AddCourtServices()
-                .AddWeatherForecasting()
+                .AddWeatherForecasting(Configuration)
                 .AddNotifications()                
                 .AddGreetings()
                 .AddCaching()
