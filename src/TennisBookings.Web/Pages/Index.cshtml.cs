@@ -51,6 +51,10 @@ namespace TennisBookings.Web.Pages
                     WeatherDescription = "It's raining... No tennis today :(";
                     break;
 
+                case "Cloud":
+                    WeatherDescription = "Cloudy, no worries";
+                    break;
+
                 default:
                     WeatherDescription = string.Empty;
                     break;
