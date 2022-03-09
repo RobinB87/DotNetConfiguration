@@ -24,10 +24,14 @@ namespace TennisBookings.Web.Pages
 
         public async Task OnGet()
         {
-            if (_config.GetValue<bool>("Feature:HomePage:EnableGreeting"))
+            var homePageFeatures = _config.GetSection("Features:HomePage");
+
+            if (homePageFeatures.GetValue<bool>("EnableGreeting"))
             {
                 Greeting = _greetingService.GetRandomGreeting();
             }
+
+            ShowWeatherForecast = homePageFeatures.GetValue<bool>("EnableWeatherForecast");
         }
     }
 }
