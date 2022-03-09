@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
+using TennisBookings.Web.Configuration;
 using TennisBookings.Web.Services;
 
 namespace TennisBookings.Web.Pages
@@ -8,13 +10,15 @@ namespace TennisBookings.Web.Pages
     public class IndexModel : PageModel
     {
         private readonly IGreetingService _greetingService;
-        private readonly IConfiguration _config;
         private readonly IWeatherForecaster _weatherForecaster;
+        private readonly HomePageConfiguration _homePageConfig;
 
-        public IndexModel(IGreetingService greetingService, IConfiguration config, IWeatherForecaster weatherForecaster)
+        public IndexModel(IGreetingService greetingService, 
+            IOptions<HomePageConfiguration> options, 
+            IWeatherForecaster weatherForecaster)
         {
             _greetingService = greetingService;
-            _config = config;
+            _homePageConfig = options.Value;
             _weatherForecaster = weatherForecaster;
         }
 
@@ -26,21 +30,18 @@ namespace TennisBookings.Web.Pages
 
         public async Task OnGet()
         {
-            var features = new Features();
-            _config.Bind("Features:HomePage", features);
-
-            if (features.EnableGreeting)
+            if (_homePageConfig.EnableGreeting)
             {
                 Greeting = _greetingService.GetRandomGreeting();
             }
 
-            ShowWeatherForecast = features.EnableWeatherForecast
+            ShowWeatherForecast = _homePageConfig.EnableWeatherForecast
                 && _weatherForecaster.ForecastEnabled;
 
             if (!ShowWeatherForecast)
                 return;
 
-            var title = features.ForecastSectionTitle;
+            var title = _homePageConfig.ForecastSectionTitle;
             ForecastSectionTitle = string.IsNullOrEmpty(title) ? "How is the weather?" : title;
 
             var currentWeather = await _weatherForecaster.GetCurrentWeatherAsync();
@@ -66,13 +67,6 @@ namespace TennisBookings.Web.Pages
                     WeatherDescription = "Weatherforecast is not determined yet";
                     break;
             }
-        }
-
-        private class Features
-        {
-            public bool EnableGreeting { get; set; }
-            public bool EnableWeatherForecast { get; set; }
-            public string ForecastSectionTitle { get; set; }
         }
     }
 }
