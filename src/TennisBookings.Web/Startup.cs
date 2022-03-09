@@ -7,6 +7,7 @@ using TennisBookings.Web.Core.DependencyInjection;
 using TennisBookings.Web.Data;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Hosting;
+using TennisBookings.Web.Configuration;
 
 namespace TennisBookings.Web
 {
@@ -25,6 +26,8 @@ namespace TennisBookings.Web
             services.AddDbContext<TennisBookingDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
+
+            services.Configure<HomePageConfiguration>(Configuration.GetSection("Features:HomePage"));
 
             services
                 .AddAppConfiguration(Configuration)
