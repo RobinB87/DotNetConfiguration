@@ -8,10 +8,12 @@ namespace TennisBookings.Web.Pages
     public class IndexModel : PageModel
     {
         private readonly IGreetingService _greetingService;
+        private readonly IConfiguration _config;
 
-        public IndexModel(IGreetingService greetingService)
+        public IndexModel(IGreetingService greetingService, IConfiguration config)
         {
             _greetingService = greetingService;
+            _config = config;
         }
 
         public string Greeting { get; private set; }
@@ -22,7 +24,10 @@ namespace TennisBookings.Web.Pages
 
         public async Task OnGet()
         {
-            
+            if (_config.GetValue<bool>("Feature:HomePage:EnableGreeting"))
+            {
+                Greeting = _greetingService.GetRandomGreeting();
+            }
         }
     }
 }
