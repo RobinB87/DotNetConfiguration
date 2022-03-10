@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using TennisBookings.Web.Configuration;
 using TennisBookings.Web.Core.DependencyInjection;
 using TennisBookings.Web.Data;
-using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Hosting;
-using TennisBookings.Web.Configuration;
+using TennisBookings.Web.Services;
 
 namespace TennisBookings.Web
 {
@@ -28,6 +29,7 @@ namespace TennisBookings.Web
                     Configuration.GetConnectionString("DefaultConnection")));
 
             services.Configure<HomePageConfiguration>(Configuration.GetSection("Features:HomePage"));
+            services.Configure<GreetingConfiguration>(Configuration.GetSection("Features:Greeting"));
 
             services
                 .AddAppConfiguration(Configuration)
