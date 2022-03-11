@@ -13,13 +13,16 @@ namespace TennisBookings.Web.External
         private readonly HttpClient _httpClient;
         private readonly ILogger<WeatherApiClient> _logger;
 
-        public WeatherApiClient(HttpClient httpClient, 
-            IOptions<ExternalServicesConfig> options, 
+        // To consume named options, you need IOptionsSnapshot or IOptionsMonitor
+        // Because of HttpClient factory typed client feature is implemented (not a scoped one)
+        // Hence IOptionsSnapshot can not be used (is scoped service)
+        public WeatherApiClient(HttpClient httpClient,
+            IOptionsMonitor<ExternalServicesConfig> options, 
             ILogger<WeatherApiClient> logger)
         {
-            var url = options.Value.Url;
+            var externalServicesConfig = options.Get(ExternalServicesConfig.WeatherApi);
 
-            httpClient.BaseAddress = new Uri(url);
+            httpClient.BaseAddress = new Uri(externalServicesConfig.Url);
 
             _httpClient = httpClient;
             _logger = logger;
