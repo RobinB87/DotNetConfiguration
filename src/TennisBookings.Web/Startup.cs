@@ -33,6 +33,8 @@ namespace TennisBookings.Web
                 .Bind(Configuration.GetSection("Features:HomePage"))
                 .ValidateDataAnnotations();
 
+            services.AddHostedService<ValidateOptionsService>();
+
             services.Configure<GreetingConfiguration>(Configuration.GetSection("Features:Greeting"));
 
             // Named options
