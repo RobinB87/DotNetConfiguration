@@ -16,7 +16,7 @@ namespace TennisBookings.Web
 {
     public class Program
     {
-        public static async Task Main (string[] args)
+        public static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
 
@@ -85,6 +85,17 @@ namespace TennisBookings.Web
                         builder.AddAzureKeyVault(config["KeyVault:BaseUrl"], kvClient,
                             new DefaultKeyVaultSecretManager());
                     }
+
+                    // First configure dev machine with AWS secret and access key as env variables
+                    // AWS SDK will pick this up automagically
+                    // Follow guide: https://docs.aws.amazon.com/sdk-for-net/v3/developer-guide/aws-sdk-net-dg.pdf#quick-start
+
+                    // cd to \src\TennisBookings.Web:
+                    // set AWS_PROFILE = <profilename>
+                    // set AWS_REGION = <region name as in appsettings>
+
+                    // TODO: Fix, does not work yet
+                    //builder.AddSystemsManager("/tennisBookings");
                 });
     }
 }
