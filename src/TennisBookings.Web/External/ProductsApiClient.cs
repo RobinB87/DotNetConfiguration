@@ -41,6 +41,16 @@ namespace TennisBookings.Web.External
 
             try
             {
+                // set NON-PROD(!) secrets with cmd in TennisBookings.Web dir:
+                // dotnet user-secrets set "ExternalServices:ProductsApi:ApiKey" "SUPERSECRETKEY"
+                // 
+                // list: dotnet user-secrets list
+                //
+                // manage with right-click project: Manage User Secrets
+                var request = new HttpRequestMessage(HttpMethod.Get, path);
+                request.Headers.Add("ApiKey", _productsApiConfig.Get(
+                    ExternalServicesConfig.ProductsApi).ApiKey);
+
                 var response = await _httpClient.GetAsync(path);
 
                 if (!response.IsSuccessStatusCode)
