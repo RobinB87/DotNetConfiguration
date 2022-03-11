@@ -47,6 +47,9 @@ namespace TennisBookings.Web.External
                 // list: dotnet user-secrets list
                 //
                 // manage with right-click project: Manage User Secrets
+                // 
+                // remove with:
+                // dotnet user-secrets remove "ExternalServices:ProductsApi:ApiKey"
                 var request = new HttpRequestMessage(HttpMethod.Get, path);
                 request.Headers.Add("ApiKey", _productsApiConfig.Get(
                     ExternalServicesConfig.ProductsApi).ApiKey);
