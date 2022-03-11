@@ -2,7 +2,11 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Azure.KeyVault;
+using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.AzureKeyVault;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -51,6 +55,36 @@ namespace TennisBookings.Web
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                })
+                .ConfigureAppConfiguration((ctx, builder) =>
+                {
+                    //
+                    // To be able to use Azure KV:
+                    // First ensure Visual Studio is logged in with the same account as Azure
+                    // If not sufficient; install and authenticate Azure CLI on machine
+                    // Still not sufficient: configure Azure Cloud Shell (shell.azure.com) -> create storage
+                    //
+
+                    // During DEV can use temporary API key
+                    // But for PROD use ctx.HostingEnvironment.IsProduction
+                    // By combining user-secrets for local DEV and Azure KV for PROD: ensure no keys are exposed
+                    if (ctx.HostingEnvironment.IsProduction())
+                    {
+                        // build current config, so we can access one of the required keys
+                        // is temporary instance of IConfiguration, is thrown away after method finishes
+                        var config = builder.Build();
+
+                        var tokenProvider = new AzureServiceTokenProvider();
+
+                        // create new KeyVaultClient which requires an AuthenticationCallbackDelegate
+                        // here KeyVaultTokenCallback is used
+                        var kvClient = new KeyVaultClient((authority, resource, scope) =>
+                            tokenProvider.KeyVaultTokenCallback(authority, resource, scope));
+
+                        // DefaultKeyVaultSecretManager translates the name used in Azure KV (replaces double dashes -- by a colon separator :)
+                        builder.AddAzureKeyVault(config["KeyVault:BaseUrl"], kvClient,
+                            new DefaultKeyVaultSecretManager());
+                    }
                 });
     }
 }
