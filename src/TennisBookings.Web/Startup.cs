@@ -50,6 +50,7 @@ namespace TennisBookings.Web
             services.Configure<HomePageConfiguration>(Configuration.GetSection("Features:HomePage"));
 
             services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<HomePageConfiguration>, HomePageConfigurationValidation>());
+            services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<ExternalServicesConfig>, ExternalServicesConfigurationValidation>());
 
             services.AddHostedService<ValidateOptionsService>();
 
