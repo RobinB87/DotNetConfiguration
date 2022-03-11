@@ -36,6 +36,17 @@
     </div>
 </div>
 
+<div class="row">
+    @foreach (var product in Model.Products)
+    {
+        <div class="col-lg-4">
+            <h4>@product.Name</h4>
+            <p>@product.Description</p>
+            <p><strong>@product.Price.ToString("C")</strong></p>
+        </div>
+    }
+</div>
+
 <h3>Want to take a look around?</h3>
 
 <div class="row">
